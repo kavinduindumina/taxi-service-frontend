@@ -1,0 +1,41 @@
+/* Highlight text with ID */
+#highlight-text {
+  color: #FBBF24;
+}
+
+/* Why Choose Us Title */
+#why-choose-us-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Why Choose Us Description */
+#why-choose-us-description {
+  color: #666;
+  margin-top: 20px;
+}
+
+/* Why Choose Us Card */
+#why-choose-us-card {
+  background-color: #ffd000;
+  border-radius: 0.5rem;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#why-choose-us-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Shadow on hover */
+}
+
+/* Icon inside the card */
+#card-icon {
+  color: #FBBF24;
+  margin-right: 10px;
+}
+
+/* Text inside the card */
+#card-text {
+  font-weight: bold;
+  color: #333;
+}

@@ -37,9 +37,9 @@ export default function NavBar() {
           className="d-inline-block align-top" /> 
         
         <Navbar.Brand href="#">
+       
           City Taxi
-        </Navbar.Brand>
-        
+          </Navbar.Brand>
         <Navbar.Toggle 
           aria-controls="navbarScroll" 
           onClick={() => setExpanded(expanded ? false : "expanded")} 

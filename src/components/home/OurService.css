@@ -1,0 +1,61 @@
+/* Title and Description for Our Services */
+#our-services-title {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  #our-services-description {
+    color: #666;
+    margin-bottom: 40px;
+  }
+  
+  /* Card Styles */
+  #our-service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  #our-service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Icon Circle */
+  #icon-circle {
+    background-color: #ffc107;
+    border-radius: 50%;
+    padding: 15px;
+    width: 60px;
+    height: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Service Image */
+  #service-image {
+    border-radius: 8px;
+    margin-top: 15px;
+  }
+  
+  /* Buttons */
+  #view-details-button {
+    background-color: #343a40;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  #view-details-button:hover {
+    background-color: #212529;
+  }
+  
+  #get-service-button {
+    background-color: #ffc107;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  #get-service-button:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+  }
+  

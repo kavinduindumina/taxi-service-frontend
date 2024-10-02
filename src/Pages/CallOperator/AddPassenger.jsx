@@ -119,7 +119,7 @@ export default function AddPassenger() {
 
               {/* Back Button */}
               <Button variant="secondary" className="w-100" onClick={handleBack}>
-                Back to Dashboard
+                Back
               </Button>
             </Form>
           </Col>
