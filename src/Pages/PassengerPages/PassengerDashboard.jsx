@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { GoogleMap, Marker, Autocomplete, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
-import { Button, Form, Container, Row, Col, Card, Modal, ListGroup } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Card, Modal, ListGroup, Image } from 'react-bootstrap';
 import { FaTimes, FaMotorcycle, FaCar, FaTaxi } from 'react-icons/fa';
 import axios from 'axios';
 import '../../Styles/PassengerDashboard.css';
@@ -51,23 +51,22 @@ export default function PassengerDashboard() {
       );
     }
   }, [isLoaded]);
-  
+
   useEffect(() => {
-    // Fetch available vehicles by type from API
     async function fetchVehicles() {
       try {
-        const response = await axios.post('http://localhost:3000/api/v1/vehicle/get-all-vehicle-types'); // Adjust API endpoint
-        setAvailableVehicles(response.data.message);
-        console.log(response.data.message);
+        const response = await axios.post('http://localhost:3000/api/v1/vehicle/get-vehicle-details', { vehicleType });
+        setAvailableVehicles((prevState) => ({
+          ...prevState,
+          [vehicleType]: response.data.message,
+        }));
       } catch (error) {
         console.error('Error fetching rides:', error);
       }
     }
-  
-    // Call the fetchVehicles function
+
     fetchVehicles();
-  }, [vehicleType]); // Effect will run when vehicleType changes
-  
+  }, [vehicleType]);
 
   function clearRoute() {
     setDirectionsResponse(null);
@@ -117,7 +116,8 @@ export default function PassengerDashboard() {
       setDirectionsResponse(results);
       const distance = results.routes[0].legs[0].distance.text;
       const duration = results.routes[0].legs[0].duration.text;
-      setCost(calculateCost(distance, vehicleType));
+      const calculatedCost = calculateCost(distance, vehicleType);
+      setCost(calculatedCost);
       setDistance(distance);
       setDuration(duration);
     }
@@ -125,6 +125,35 @@ export default function PassengerDashboard() {
 
   function confirmVehicleSelection() {
     setShowModal(false);
+  }
+
+  async function handleBookRide() {
+    if (!selectedVehicle) {
+      alert("Please select a vehicle before booking.");
+      return;
+    }
+
+    const bookingData = {
+      passengerId: 1, // Assuming you have the passenger ID from the session or state
+      currentPlaceName,
+      destination: destinationRef.current.value,
+      distance,
+      duration,
+      cost,
+      vehicleId: selectedVehicle.vehicleNumber, // Assuming vehicle number is used as vehicle ID
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/v1/passenger/book-ride', bookingData);
+      if (response.status === 200) {
+        alert('Ride booked successfully!');
+      } else {
+        alert('Failed to book the ride.');
+      }
+    } catch (error) {
+      console.error('Error booking ride:', error);
+      alert('Failed to book the ride.');
+    }
   }
 
   return (
@@ -147,23 +176,28 @@ export default function PassengerDashboard() {
           <Col md={6}>
             <Card>
               <Card.Body>
-                <Card.Title className="text-center">Book a Ride</Card.Title>
+                <Card.Title className="text-center mb-4">Book a Ride</Card.Title>
                 <Form>
-                  <Row className="mb-2">
+                  <Row className="mb-3">
                     <Col>
                       <Form.Label>PICKUP</Form.Label>
                       <Form.Group controlId="formCurrentLocation">
                         <Form.Control type="text" value={currentPlaceName} readOnly />
                       </Form.Group>
                     </Col>
-                    <Col xs="auto">
-                      <Button variant="danger" onClick={clearRoute}>
+                    <Col xs={2} className="d-flex justify-content-center align-items-center">
+                      <Button
+                        variant="outline-danger"
+                        onClick={clearRoute}
+                        className="clear-button"
+                        style={{ padding: '6px 12px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                      >
                         <FaTimes />
                       </Button>
                     </Col>
                   </Row>
 
-                  <Row className="mb-2">
+                  <Row className="mb-3">
                     <Col>
                       <Form.Label>DROP</Form.Label>
                       <Form.Group controlId="formDestination">
@@ -173,18 +207,18 @@ export default function PassengerDashboard() {
                             calculateRoute(destination);
                           }}
                         >
-                          <Form.Control type="text" ref={destinationRef} placeholder="Destination" />
+                          <Form.Control type="text" ref={destinationRef} placeholder="Enter destination" />
                         </Autocomplete>
                       </Form.Group>
                     </Col>
                   </Row>
 
-                  <Row className="mt-3">
+                  <Row className="mb-3">
                     {['Tuk', 'Bike', 'Car'].map((type) => (
                       <Col key={type} md={4}>
                         <Card
                           border={vehicleType === type ? 'primary' : 'light'}
-                          className="text-center"
+                          className="text-center cursor-pointer"
                           onClick={() => {
                             setVehicleType(type);
                             setShowModal(true);
@@ -194,62 +228,70 @@ export default function PassengerDashboard() {
                             {type === 'Tuk' && <FaTaxi size={30} />}
                             {type === 'Bike' && <FaMotorcycle size={30} />}
                             {type === 'Car' && <FaCar size={30} />}
-                            <Card.Title>{type}</Card.Title>
+                            <Card.Title className="mt-2">{type}</Card.Title>
                             <Card.Text>Cost: LKR {calculateCost(distance, type)}</Card.Text>
                           </Card.Body>
-
                         </Card>
                       </Col>
                     ))}
                   </Row>
-                  
+
                   {distance && (
-                    <Row className="mt-3">
-                      <Col>
-                        <p>Distance: {distance}</p>
-                        <p>Duration: {duration}</p>
-                        <p>Cost: LKR {cost}</p>
-                      </Col>
-                    </Row>
+                    <Card className="mb-3">
+                      <Card.Body>
+                        <Row>
+                          <Col>
+                            <p className="mb-1"><strong>Distance:</strong> {distance}</p>
+                            <p className="mb-1"><strong>Duration:</strong> {duration}</p>
+                            <p className="mb-1"><strong>Cost:</strong> LKR {calculateCost(distance, vehicleType)}</p>
+                          </Col>
+                        </Row>
+                      </Card.Body>
+                    </Card>
                   )}
+
+                  <Button variant="primary" onClick={handleBookRide} disabled={!distance}>
+                    Book Now
+                  </Button>
                 </Form>
               </Card.Body>
             </Card>
           </Col>
         </Row>
-
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Select Your {vehicleType}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {availableVehicles[vehicleType]?.length ? (
-              <ListGroup>
-                {availableVehicles[vehicleType].map((vehicle) => (
-                  <ListGroup.Item
-                    key={vehicle.id}
-                    active={selectedVehicle?.id === vehicle.id}
-                    onClick={() => setSelectedVehicle(vehicle)}
-                  >
-                    {vehicle.vehicleNumber} - {vehicle.vehicleType} - {vehicle.vehicleColor}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            ) : (
-              <p>No available {vehicleType}s at the moment.</p>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={confirmVehicleSelection}>
-              Confirm
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </Container>
       <Footer />
+
+      {/* Modal to show available vehicles */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select a Vehicle</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {availableVehicles[vehicleType]?.map((vehicle, index) => (
+              <ListGroup.Item
+                key={index}
+                onClick={() => setSelectedVehicle(vehicle)}
+                active={selectedVehicle?.vehicleNumber === vehicle.vehicleNumber}
+              >
+                <Row className="align-items-center">
+                  <Col xs={3}>
+                    <Image src={vehicle.image} rounded fluid />
+                  </Col>
+                  <Col>
+                    <h6>{vehicle.vehicleNumber}</h6>
+                    <p>Driver: {vehicle.driverName}</p>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+          <Button variant="primary" onClick={confirmVehicleSelection} disabled={!selectedVehicle}>Confirm</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

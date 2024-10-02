@@ -134,12 +134,30 @@ export default function Scheduleride({ bookingDetails = {} }) {
     }
   };
 
+
   const handleCardPayment = () => {
-    // Here you would typically process the card payment
-    console.log('Processing card payment:', cardDetails);
-    handleClosePaymentModal();
-    setRideStatus('Completed');
+    Swal.fire({
+      title: 'Confirm Payment',
+      text: 'Are you sure you want to proceed with the payment?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, pay now',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Here you would typically process the card payment
+        console.log('Processing card payment:', cardDetails);
+        handleClosePaymentModal();
+        setRideStatus('Completed');
+        Swal.fire(
+          'Payment Successful!',
+          'Your payment has been processed successfully.',
+          'success'
+        );
+      }
+    });
   };
+  
 
   const handleCardDetailsChange = (e) => {
     setCardDetails({
@@ -258,13 +276,13 @@ export default function Scheduleride({ bookingDetails = {} }) {
             <Button variant="primary" className="w-100 mb-2" onClick={handlePayClick}>Pay</Button>
           )}
           <Button 
-            variant="success" 
-            className="w-100" 
-            onClick={handleDoneClick}
-            disabled={rideStatus !== 'Completed'}
-          >
-            Done
-          </Button>
+  style={{ backgroundColor: 'red', borderColor: 'red' }} 
+  className="w-100" 
+  onClick={handleDoneClick}
+  disabled={rideStatus !== 'Completed'}
+>
+  Done
+</Button>
         </Card.Body>
       </Card>
 
