@@ -30,8 +30,6 @@ export default function PassengerRegister() {
       const response = await axios.post('http://localhost:3000/api/v1/passenger/register', formData); // Update with your backend route
       console.log(response.data);
 
-      // Send the auto-generated password via email (Assume backend handles this)
-
       // Display a success notification using SweetAlert 2
       Swal.fire({
         title: 'Success!',
@@ -53,83 +51,107 @@ export default function PassengerRegister() {
     }
   };
 
+  // Handle "Book Ride" button click
+  const handleBookRide = () => {
+    // Trigger SweetAlert for the Book Ride action
+    Swal.fire({
+      title: 'Ride Booked!',
+      text: 'Your ride has been successfully booked.',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    });
+  };
+
   return (
     <div>
       <NavBar />
 
       <Container fluid className="p-5">
-        <Card className="text-black m-5" style={{ borderRadius: '25px' }}>
+        <Card className="text-black m-5" style={{ borderRadius: '25px', boxShadow: '0 4px 30px rgba(0,0,0,0.1)' }}>
           <Card.Body>
             <Row>
               <Col md={10} lg={6} className="order-2 order-lg-1 d-flex flex-column align-items-center">
-                <h1 className="text-center fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</h1>
+                <h1 className="text-center fw-bold mb-4" style={{ color: 'red' }}>Sign up</h1>
 
-                <Form onSubmit={handleSubmit}> 
-                  <div className="d-flex flex-row align-items-center mb-4 w-100">
+                <Form onSubmit={handleSubmit} className="w-100">
+                  <div className="d-flex flex-row align-items-center mb-4">
                     <FaEnvelope size={24} className="me-3" />
                     <Form.Control type="email"
                       placeholder="Enter Your Email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      required />
+                      required
+                      className="border-0 rounded shadow-sm"
+                      style={{ height: '50px' }} />
                   </div>
 
-                  <div className="d-flex flex-row align-items-center mb-4 w-100">
+                  <div className="d-flex flex-row align-items-center mb-4">
                     <FaUser size={24} className="me-3" />
                     <Form.Control type="text"
                       placeholder="Enter Your Full Name"
-                      className="w-100"
                       name="fullname"
                       value={formData.fullname}
                       onChange={handleInputChange}
                       required
-                    />
+                      className="border-0 rounded shadow-sm"
+                      style={{ height: '50px' }} />
                   </div>
 
-                  <div className="d-flex flex-row align-items-center mb-4 w-100">
+                  <div className="d-flex flex-row align-items-center mb-4">
                     <FaUser size={24} className="me-3" />
                     <Form.Control type="text"
                       placeholder="Enter Your NIC Number"
-                      className="w-100"
                       name="nic"
                       value={formData.nic}
                       onChange={handleInputChange}
                       required
-                    />
+                      className="border-0 rounded shadow-sm"
+                      style={{ height: '50px' }} />
                   </div>
 
-                  <div className="d-flex flex-row align-items-center mb-4 w-100">
+                  <div className="d-flex flex-row align-items-center mb-4">
                     <FaPhone size={24} className="me-3" />
                     <Form.Control type="text"
                       placeholder="Enter Your Phone Number"
-                      className="w-100"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                    />
+                      className="border-0 rounded shadow-sm"
+                      style={{ height: '50px' }} />
                   </div>
 
-                  <div className="d-flex flex-row align-items-center mb-4 w-100">
+                  <div className="d-flex flex-row align-items-center mb-4">
                     <FaEnvelope size={24} className="me-3" />
                     <Form.Control
                       type="text"
                       placeholder="Enter Your Address"
-                      className="w-100"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
                       required
-                    />
+                      className="border-0 rounded shadow-sm"
+                      style={{ height: '50px' }} />
                   </div>
 
-                  <Button variant="warning" size="lg" type="submit" className="mb-4">Register</Button>
+                  <div className="text-center">
+                    <Button variant="primary" size="lg" type="submit" className="mb-4 rounded" style={{ height: '50px', width: '100%' }}>Register</Button>
+                  </div>
                 </Form>
+
+                <div className="text-center">
+                  {/* Book Ride button */}
+                  <Button variant="success" size="lg" className="mb-4 rounded" style={{ height: '50px', width: '100%' }} onClick={handleBookRide}>
+                    Book Ride
+                  </Button>
+                </div>
               </Col>
 
               <Col md={10} lg={6} className="order-1 order-lg-2 d-flex align-items-center">
-                <Image src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp" fluid />
+                <Card className="border-0" style={{ borderRadius: '15px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                  <Image src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp" fluid />
+                </Card>
               </Col>
             </Row>
           </Card.Body>
@@ -140,3 +162,4 @@ export default function PassengerRegister() {
     </div>
   );
 }
+

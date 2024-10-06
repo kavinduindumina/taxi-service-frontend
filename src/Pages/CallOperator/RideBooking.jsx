@@ -60,10 +60,6 @@ function RideBooking() {
       return;
     }
   
-    // Log values
-    console.log('Origin:', originRef.current.value);
-    console.log('Destination:', destinationRef.current.value);
-  
     try {
       const directionsService = new window.google.maps.DirectionsService();
       const results = await directionsService.route({
@@ -77,8 +73,11 @@ function RideBooking() {
       setDistance(results.routes[0].legs[0].distance.text);
       setDuration(results.routes[0].legs[0].duration.text);
   
-      const calculatedPrice = distanceInKm * vehiclePrices[selectedVehicle];
-      setPrice(calculatedPrice.toFixed(2));
+      // Calculate price in USD and convert to LKR
+      const calculatedPriceInUsd = distanceInKm * vehiclePrices[selectedVehicle];
+      const usdToLkrRate = 330; // Example conversion rate from USD to LKR
+      const calculatedPriceInLkr = calculatedPriceInUsd * usdToLkrRate;
+      setPrice(calculatedPriceInLkr.toFixed(2));
     } catch (error) {
       console.error('Error calculating route:', error);
       alert('Error calculating route. Please try again.');
@@ -170,7 +169,7 @@ function RideBooking() {
             <span>Duration: {duration}</span>
           </Col>
           <Col>
-            <span>Total Price: ${price}</span>
+            <span>Total Price: LKR {price}</span>
           </Col>
         </Row>
 
@@ -199,7 +198,7 @@ function RideBooking() {
                 }
               }}
             >
-              <FaLocationArrow /> Center Map
+              <FaLocationArrow /> Current Location
             </Button>
           </Col>
           <Col xs="auto">
@@ -207,7 +206,7 @@ function RideBooking() {
               variant="info"
               onClick={() => navigate('/CallOperatorDashboard')}
             >
-              Back to Dashboard
+              Back
             </Button>
           </Col>
         </Row>
