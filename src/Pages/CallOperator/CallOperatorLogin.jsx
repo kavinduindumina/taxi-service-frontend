@@ -8,16 +8,16 @@ import Swal from 'sweetalert2';
 import './CallOperatorLogin.css';  // Custom styles for the enhanced login page
 
 export default function CallOperatorLogin() {
-  const [email, setEmail] = useState('');
+  const [userName, setuserName] = useState('');
   const [password, setPassword] = useState('');
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!email || !password) {
+    if (!userName || !password) {
       Swal.fire({
         icon: 'warning',
         title: 'Incomplete!',
-        text: 'Please enter both email and password.',
+        text: 'Please enter both User Name and password.',
         showConfirmButton: true,
       });
       return;
@@ -32,8 +32,8 @@ export default function CallOperatorLogin() {
     });
 
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/call-operator/login', {
-        email,
+      const response = await axios.post('http://localhost:3000/api/v1/phone-operator/login', {
+        userName,
         password,
       });
 
@@ -73,13 +73,13 @@ export default function CallOperatorLogin() {
               <h3 className="text-center mb-4 text-primary">Login</h3>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-4">
-                  <Form.Label>Email Address</Form.Label>
+                  <Form.Label>User Name</Form.Label>
                   <Form.Control
-                    type="email"
-                    placeholder="Enter your email"
+                    type="text"
+                    placeholder="Enter your User Name"
                     size="lg"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={userName}
+                    onChange={(e) => setuserName(e.target.value)}
                     required
                     className="custom-input"
                   />
