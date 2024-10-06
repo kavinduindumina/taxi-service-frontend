@@ -57,6 +57,10 @@ export default function DriverLogin() {
 
       <NavBar />
       <Container className="p-3 my-5 h-custom">
+        <h2 style={{
+              color: 'orange', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', textAlign: 'center',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
+            }}>Driver Sign In Page</h2>
         <Row>
           <Col md={6}>
             <img
@@ -68,7 +72,8 @@ export default function DriverLogin() {
 
           <Col md={6}>
             <div className="d-flex flex-row align-items-center justify-content-center mb-4">
-              <p className="lead fw-normal mb-0 me-3">Sign in with</p>
+              
+              <p className="lead fw-normal mb-0 me-3"> Sign In </p>
               <Button variant="primary" className="me-2">
                 <i className="fab fa-facebook-f"></i>
               </Button>

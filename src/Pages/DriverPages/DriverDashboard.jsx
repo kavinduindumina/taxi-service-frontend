@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, ListGroup, ProgressBar, Image } from 'react-bootstrap';
 import { FaCar } from 'react-icons/fa';
 import NavBar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import Footer from '../../components/home/Footer';
 import Logout from '../../components/Logout';
 import EditProfileModal from '../../components/Driver/EditProfileModal';
 import MapComponent from '../../components/Driver/MapComponent';
@@ -179,7 +179,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Monthly Earnings</Card.Title>
@@ -194,7 +194,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Total Rides</Card.Title>
@@ -211,7 +211,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Rating</Card.Title>

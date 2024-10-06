@@ -62,6 +62,10 @@ export default function DriverRegister() {
       <NavBar />
 
       <Container fluid className="p-5">
+      <h2 style={{
+              color: 'orange', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', textAlign: 'center',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
+            }}>Driver Registration</h2>
         <Card className="text-black m-5" style={{ borderRadius: '25px' }}>
           <Card.Body>
             <Row>
