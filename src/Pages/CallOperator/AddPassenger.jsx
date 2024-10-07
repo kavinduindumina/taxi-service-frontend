@@ -94,7 +94,7 @@ export default function AddPassenger() {
                 <Form.Control
                   type="text"
                   name="startLocation"
-                  placeholder="Enter Start Location"
+                  placeholder="Pickup Location"
                   value={passengerData.startLocation}
                   onChange={handleChange}
                   required
@@ -106,7 +106,7 @@ export default function AddPassenger() {
                 <Form.Control
                   type="text"
                   name="endLocation"
-                  placeholder="Enter End Location"
+                  placeholder="Drop Location"
                   value={passengerData.endLocation}
                   onChange={handleChange}
                   required

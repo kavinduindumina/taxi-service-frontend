@@ -10,6 +10,7 @@ import './CallOperatorLogin.css';  // Custom styles for the enhanced login page
 export default function CallOperatorLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -63,6 +64,16 @@ export default function CallOperatorLogin() {
     }
   };
 
+  const handleSocialLogin = (provider) => {
+    // Placeholder for social login integration, use actual OAuth flow
+    Swal.fire({
+      icon: 'info',
+      title: `Logging in with ${provider}`,
+      text: `Redirecting to ${provider}...`,
+      showConfirmButton: true,
+    });
+  };
+
   return (
     <div className="call-operator-login">
       <NavBar />
@@ -108,15 +119,35 @@ export default function CallOperatorLogin() {
                     Log In
                   </Button>
                 </div>
-                
-              {/* /* Add button to navigate to Ride Booking */}
-              <div className="text-center mt-4">
-                <Link to="/CallOperatorDashboard">
-                  <Button variant="primary" size="lg">
-                    Call Operator Dashboard
+
+                {/* Social Login Buttons */}
+                <div className="text-center mt-4">
+                  <p className="small fw-bold">Or log in with:</p>
+                  <Button
+                    variant="outline-danger"
+                    className="mb-2 w-100"
+                    size="lg"
+                    onClick={() => handleSocialLogin('Google')}
+                  >
+                    <i className="fab fa-google me-2"></i> Log in with Google
                   </Button>
-                </Link>
-              </div>
+                  <Button
+                    variant="outline-primary"
+                    className="mb-2 w-100"
+                    size="lg"
+                    onClick={() => handleSocialLogin('Facebook')}
+                  >
+                    <i className="fab fa-facebook me-2"></i> Log in with Facebook
+                  </Button>
+                </div>
+
+                <div className="text-center mt-4">
+                  <Link to="/CallOperatorDashboard">
+                    <Button variant="primary" size="lg">
+                      Call Operator Dashboard
+                    </Button>
+                  </Link>
+                </div>
 
                 <div className="text-center mt-3">
                   <p className="small fw-bold">

@@ -7,19 +7,25 @@ const ManagePassengerDetails = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    
     const fetchPassengers = async () => {
-      
       const data = [
         { id: 1, email: 'oshadan@icloud.com', fullName: 'Oshada Wickramasinghe', userName: 'oshada_n', nic: '2001278436782', phone: '123-456-7890', address: '24, Richmond Hill, Galle' },
         { id: 2, email: 'mithilad@outlook.com', fullName: 'Mithila Damruwan', userName: 'mithila_d', nic: '29908283789239', phone: '897-237-675', address: '17, Elliot Rd, Galle' },
       ];
-
       setPassengers(data);
     };
-
     fetchPassengers();
   }, []);
+
+  const handleEdit = (id) => {
+    console.log('Edit passenger with ID:', id);
+    // Add your logic for editing passenger
+  };
+
+  const handleDelete = (id) => {
+    console.log('Delete passenger with ID:', id);
+    // Add your logic for deleting passenger
+  };
 
   return (
     <div className="manage-passenger-container">
@@ -35,11 +41,12 @@ const ManagePassengerDetails = () => {
           <tr>
             <th>ID</th>
             <th>Email</th>
-            <th>FullName</th>
+            <th>Full Name</th>
             <th>Username</th>
             <th>NIC</th>
             <th>Phone</th>
             <th>Address</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -66,16 +73,6 @@ const ManagePassengerDetails = () => {
       </table>
     </div>
   );
-
-  const handleEdit = (id) => {
-    console.log('Edit passenger with ID:', id);
-    // Add your logic for editing passenger
-  };
-
-  const handleDelete = (id) => {
-    console.log('Delete passenger with ID:', id);
-    // Add your logic for deleting passenger
-  };
 };
 
 export default ManagePassengerDetails;
