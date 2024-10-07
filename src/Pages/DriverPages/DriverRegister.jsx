@@ -157,9 +157,9 @@ export default function DriverRegister() {
                   </div>
 
 
-
+                <Button variant="warning"  size="lg" type="submit" className="mb-4">Register</Button>
                 </Form>
-                <Button variant="warning" size="lg" type="submit" className="mb-4">Register</Button>
+                
               </Col>
 
               <Col md={10} lg={6} className="order-1 order-lg-2 d-flex align-items-center">

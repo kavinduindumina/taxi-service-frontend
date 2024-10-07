@@ -31,6 +31,7 @@ export default function DriverDashboard() {
   const [editAddress, setEditAddress] = useState('');
   const [totalRideCount, setTotalRideCount] = useState('');
   const [totalEarnings, setTotalEarnings] = useState(0); // Add state for total earnings
+  const [driverId, setDriverId] = useState('');
   const navigate = useNavigate();
 
   //--------------fetch driver------------------//
@@ -38,6 +39,7 @@ export default function DriverDashboard() {
     const token = localStorage.getItem('driverToken');
     const userDetails = localStorage.getItem('UserDetails');
     const userDetailsParse = JSON.parse(userDetails)
+    setDriverId(userDetailsParse.id)
 
     if (!token) {
       navigate('/DriverLogin'); // Redirect to login if no token is present
@@ -88,7 +90,8 @@ export default function DriverDashboard() {
         driverId: userDetailsParse.id
       })
         .then(res => {
-          setVehicles(res.data.vehicles); // Set vehicles in state
+          setVehicles(res.data.data); // Set vehicles in state
+          console.log(res.data.data); // Set vehicle
         })
         .catch(err => {
           console.log('Error fetching vehicle details:', err);
@@ -307,6 +310,7 @@ export default function DriverDashboard() {
               editAddress={editAddress}
               setEditAddress={setEditAddress}
               handleSaveChanges={handleSaveChanges}
+              driverId={driverId}
             />
 
 
@@ -329,7 +333,7 @@ export default function DriverDashboard() {
 
         </Row>
       </Container>
-      {/*<ChatComponent />*/}
+      {/**/}<ChatComponent />
       <Footer />
 
     </div>
