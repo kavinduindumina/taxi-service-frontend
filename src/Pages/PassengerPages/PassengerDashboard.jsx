@@ -27,9 +27,11 @@ export default function PassengerDashboard() {
   const [availableVehicles, setAvailableVehicles] = useState({ Tuk: [], Bike: [], Car: [] });
   const [showModal, setShowModal] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [passengerId , setPassengerId] = useState("");
   const destinationRef = useRef();
 
   useEffect(() => {
+    setPassengerId(localStorage.getItem('passenger'));
     if (navigator.geolocation && isLoaded) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -130,6 +132,7 @@ export default function PassengerDashboard() {
   }
 
   async function handleBookRide() {
+    const id = passengerId && JSON.parse(passengerId).id; 
     if (!selectedVehicle) {
       alert("Please select a vehicle before booking.");
       return;
@@ -137,7 +140,7 @@ export default function PassengerDashboard() {
     const calculatedCost = calculateCost(distance, vehicleType);
     const finalcost = String(calculatedCost); // Ensure this is a string
     const bookingData = {
-      passengerId: 7, // Assuming you have the passenger ID from the session or state
+      passengerId: id, // Assuming you have the passenger ID from the session or state
       currentPlaceName,
       destination: destinationRef.current.value,
       distance,
@@ -298,7 +301,7 @@ export default function PassengerDashboard() {
               >
                 <Row className="align-items-center">
                 <Col xs={3}>
-                    <Image src={vehicle.image} rounded fluid />
+                    <Image src={vehicle.ImagePath} rounded fluid />
                   </Col>
                   <Col>
                     <h6>{vehicle.vehicleNumber}</h6>

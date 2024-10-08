@@ -27,7 +27,7 @@ export default function PassengerLogin() {
         email,
         password,
       });
-      const { token } = response.data;
+      const { token, user } = response.data.message;
 
       Swal.fire({
         icon: 'success',
@@ -38,6 +38,7 @@ export default function PassengerLogin() {
       });
 
       localStorage.setItem('passengerToken', token);
+      localStorage.setItem('passenger', JSON.stringify(user));
       window.location.href = '/PassengerDashboard';
     } catch (error) {
       Swal.fire({

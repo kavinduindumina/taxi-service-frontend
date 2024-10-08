@@ -12,26 +12,25 @@ const UserProfile = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState(""); // State to store the error message
+  const [passengerId , setPassengerId] = useState("");
 
   // Fetch user details on component load
   // Fetch user details on component load
 useEffect(() => {
+  setPassengerId(localStorage.getItem('passenger'));
+  const id = passengerId && JSON.parse(passengerId).id; 
+  console.log(id);
   const fetchPassengerDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/v1/passenger/getPassenger/${7}`);
-      console.log(response.data); // Check the full data structure
-
-      // Check the HTTP response status
-      if (response.status === 200) {
-        const passenger = response.data;
+      const response = await axios.get(`http://localhost:3000/api/v1/passenger/profile/${id}`);
+     
+        const passenger = response.data.message;
         setFullName(passenger.fullName);
         setEmail(passenger.email);
         setNic(passenger.nic);
         setPhone(passenger.phone);
         setAddress(passenger.address);
-      } else {
-        setError("Failed to fetch passenger details");
-      }
+        setError("");
     } catch (err) {
       console.error("Error fetching passenger details: ", err);
       setError("Failed to fetch passenger details");
@@ -39,9 +38,8 @@ useEffect(() => {
   };
 
   fetchPassengerDetails();
-}, []);
+}, [passengerId]);
 
-  
 
   // Handle Update action
   const handleUpdate = () => {
