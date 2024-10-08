@@ -164,6 +164,8 @@ export default function PassengerDashboard() {
               showConfirmButton: false,
               timer: 1500,
             });
+
+            window.location.href = '/Scheduleride';
           } else {
             Swal.fire({
               icon: 'error',
