@@ -134,7 +134,7 @@ function RidesTable() {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Driver Name</th>
+            
             <th>Passenger Passenger</th>
             <th>Pickup Location</th>
             <th>Drop Location</th>
@@ -149,7 +149,7 @@ function RidesTable() {
           {rides.map((ride) => (
             <tr key={ride.id}>
               <td>{ride.id}</td>
-              <td>{ride.driver.fullName || 'N/A'}</td>
+              
               <td>{ride.passenger.fullName}</td>
               <td>{ride.pickupLocation}</td>
               <td>{ride.dropLocation}</td>
