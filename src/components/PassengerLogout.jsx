@@ -23,6 +23,7 @@ const LogoutButton = () => {
           'You have been logged out successfully.',
           'success'
         );
+        localStorage.clear();
         window.location.href = './Home'; 
       }
     });

@@ -51,16 +51,7 @@ export default function PassengerRegister() {
     }
   };
 
-  // Handle "Book Ride" button click
-  const handleBookRide = () => {
-    // Trigger SweetAlert for the Book Ride action
-    Swal.fire({
-      title: 'Ride Booked!',
-      text: 'Your ride has been successfully booked.',
-      icon: 'success',
-      confirmButtonText: 'OK',
-    });
-  };
+ 
 
   return (
     <div>
@@ -140,12 +131,7 @@ export default function PassengerRegister() {
                   </div>
                 </Form>
 
-                <div className="text-center">
-                  {/* Book Ride button */}
-                  <Button variant="success" size="lg" className="mb-4 rounded" style={{ height: '50px', width: '100%' }} onClick={handleBookRide}>
-                    Book Ride
-                  </Button>
-                </div>
+      
               </Col>
 
               <Col md={10} lg={6} className="order-1 order-lg-2 d-flex align-items-center">

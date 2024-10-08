@@ -3,6 +3,7 @@ import { GoogleMap, Marker, Autocomplete, DirectionsRenderer, useJsApiLoader } f
 import { Button, Form, Container, Row, Col, Card, Modal, ListGroup, Image } from 'react-bootstrap';
 import { FaTimes, FaMotorcycle, FaCar, FaTaxi } from 'react-icons/fa';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import '../../Styles/PassengerDashboard.css';
 import NavBar from '../../components/Navbar';
 import Footer from '../../components/Footer';
@@ -26,9 +27,11 @@ export default function PassengerDashboard() {
   const [availableVehicles, setAvailableVehicles] = useState({ Tuk: [], Bike: [], Car: [] });
   const [showModal, setShowModal] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [passengerId , setPassengerId] = useState("");
   const destinationRef = useRef();
 
   useEffect(() => {
+    setPassengerId(localStorage.getItem('passenger'));
     if (navigator.geolocation && isLoaded) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -94,6 +97,7 @@ export default function PassengerDashboard() {
 
     const selectedRate = rates[vehicleType];
     const totalCost = selectedRate.costPerKilometer * distanceValue + selectedRate.costPerMinute * durationValue;
+   
     return isNaN(totalCost) ? 0 : totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
@@ -128,33 +132,54 @@ export default function PassengerDashboard() {
   }
 
   async function handleBookRide() {
+    const id = passengerId && JSON.parse(passengerId).id; 
     if (!selectedVehicle) {
       alert("Please select a vehicle before booking.");
       return;
     }
-
+    const calculatedCost = calculateCost(distance, vehicleType);
+    const finalcost = String(calculatedCost); // Ensure this is a string
     const bookingData = {
-      passengerId: 1, // Assuming you have the passenger ID from the session or state
+      passengerId: id, // Assuming you have the passenger ID from the session or state
       currentPlaceName,
       destination: destinationRef.current.value,
       distance,
       duration,
-      cost,
-      vehicleId: selectedVehicle.vehicleNumber, // Assuming vehicle number is used as vehicle ID
+      cost: finalcost,
+      vehicleId: 1, // Assuming vehicle number is used as vehicle ID
+      //vehicleId: selectedVehicle.vehicleNumber,
+     
     };
+   
+        console.log('cost isfscsfs :',finalcost);
+        console.log('vehicleId is :', selectedVehicle.vehicleNumber);
 
-    try {
-      const response = await axios.post('http://localhost:3000/api/v1/passenger/book-ride', bookingData);
-      if (response.status === 200) {
-        alert('Ride booked successfully!');
-      } else {
-        alert('Failed to book the ride.');
+        try {
+          const response = await axios.post('http://localhost:3000/api/v1/passenger/book-ride', bookingData);
+          if (response.status === 200) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Ride Booked!',
+              text: 'Your ride has been successfully booked.',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed!',
+              text: 'Failed to book the ride.',
+            });
+          }
+        } catch (error) {
+          console.error('Error booking ride:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to book the ride.',
+          });
+        }
       }
-    } catch (error) {
-      console.error('Error booking ride:', error);
-      alert('Failed to book the ride.');
-    }
-  }
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -275,12 +300,11 @@ export default function PassengerDashboard() {
                 active={selectedVehicle?.vehicleNumber === vehicle.vehicleNumber}
               >
                 <Row className="align-items-center">
-                  <Col xs={3}>
-                    <Image src={vehicle.image} rounded fluid />
+                <Col xs={3}>
+                    <Image src={vehicle.ImagePath} rounded fluid />
                   </Col>
                   <Col>
                     <h6>{vehicle.vehicleNumber}</h6>
-                    <p>Driver: {vehicle.driverName}</p>
                   </Col>
                 </Row>
               </ListGroup.Item>
