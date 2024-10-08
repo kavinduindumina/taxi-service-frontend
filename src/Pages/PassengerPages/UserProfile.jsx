@@ -1,18 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import axios from 'axios'; // Import axios for API calls
 
 const UserProfile = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
-
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [nic, setNic] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [error, setError] = useState(""); // State to store the error message
 
-  // Function to handle update action
+  // Fetch user details on component load
+  // Fetch user details on component load
+useEffect(() => {
+  const fetchPassengerDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/passenger/getPassenger/${7}`);
+      console.log(response.data); // Check the full data structure
+
+      // Check the HTTP response status
+      if (response.status === 200) {
+        const passenger = response.data;
+        setFullName(passenger.fullName);
+        setEmail(passenger.email);
+        setNic(passenger.nic);
+        setPhone(passenger.phone);
+        setAddress(passenger.address);
+      } else {
+        setError("Failed to fetch passenger details");
+      }
+    } catch (err) {
+      console.error("Error fetching passenger details: ", err);
+      setError("Failed to fetch passenger details");
+    }
+  };
+
+  fetchPassengerDetails();
+}, []);
+
+  
+
+  // Handle Update action
   const handleUpdate = () => {
     Swal.fire({
       title: 'Profile Updated!',
@@ -22,14 +53,15 @@ const UserProfile = () => {
     });
   };
 
-  // Function to handle cancel action
+  // Handle Cancel action
   const handleCancel = () => {
-    navigate('/PassengerDashboard'); // Navigate to Passenger Dashboard
+    navigate('/PassengerDashboard');
   };
 
   return (
     <Container className="mt-5">
       <h1>User Profile</h1>
+      {error && <p className="text-danger">{error}</p>} {/* Display error message */}
       <Card>
         <Card.Body>
           <Card.Title>Your Information</Card.Title>
