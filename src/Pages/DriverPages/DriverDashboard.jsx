@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, ListGroup, ProgressBar, Image } from 'react-bootstrap';
 import { FaCar } from 'react-icons/fa';
 import NavBar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import Footer from '../../components/home/Footer';
 import Logout from '../../components/Logout';
 import EditProfileModal from '../../components/Driver/EditProfileModal';
 import MapComponent from '../../components/Driver/MapComponent';
@@ -31,6 +31,7 @@ export default function DriverDashboard() {
   const [editAddress, setEditAddress] = useState('');
   const [totalRideCount, setTotalRideCount] = useState('');
   const [totalEarnings, setTotalEarnings] = useState(0); // Add state for total earnings
+  const [driverId, setDriverId] = useState('');
   const navigate = useNavigate();
 
   //--------------fetch driver------------------//
@@ -38,6 +39,7 @@ export default function DriverDashboard() {
     const token = localStorage.getItem('driverToken');
     const userDetails = localStorage.getItem('UserDetails');
     const userDetailsParse = JSON.parse(userDetails)
+    setDriverId(userDetailsParse.id)
 
     if (!token) {
       navigate('/DriverLogin'); // Redirect to login if no token is present
@@ -88,7 +90,8 @@ export default function DriverDashboard() {
         driverId: userDetailsParse.id
       })
         .then(res => {
-          setVehicles(res.data.vehicles); // Set vehicles in state
+          setVehicles(res.data.data); // Set vehicles in state
+          console.log(res.data.data); // Set vehicle
         })
         .catch(err => {
           console.log('Error fetching vehicle details:', err);
@@ -179,7 +182,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Monthly Earnings</Card.Title>
@@ -194,7 +197,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Total Rides</Card.Title>
@@ -211,7 +214,7 @@ export default function DriverDashboard() {
           <Col md={4}>
             <Card className="text-center"
             style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
+              background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)', 
             }}>
               <Card.Body>
                 <Card.Title>Rating</Card.Title>
@@ -307,6 +310,7 @@ export default function DriverDashboard() {
               editAddress={editAddress}
               setEditAddress={setEditAddress}
               handleSaveChanges={handleSaveChanges}
+              driverId={driverId}
             />
 
 
@@ -329,7 +333,7 @@ export default function DriverDashboard() {
 
         </Row>
       </Container>
-      {/*<ChatComponent />*/}
+      {/**/}<ChatComponent />
       <Footer />
 
     </div>

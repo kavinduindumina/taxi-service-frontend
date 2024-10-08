@@ -8,11 +8,16 @@ import MapComponent from './MapComponent';
 function RidesTable() {
   const [rides, setRides] = useState([]);
   const [selectedRide, setSelectedRide] = useState(null);
+  const [driverDetails, setDriverDetails] = useState('');
 
   // Fetch the rides data from the backend API
   useEffect(() => {
     fetchRides();
+    const userDetails = JSON.parse(localStorage.getItem('UserDetails'));
+    setDriverDetails(userDetails)
   }, []);
+
+  console.log(driverDetails)
 
   const fetchRides = async () => {
     try {
@@ -61,7 +66,7 @@ function RidesTable() {
     if (result.isConfirmed) {
       try {
         await axios.put(`http://localhost:3000/api/v1/driver/rides/${rideId}`, { status: 'in-progress' });
-        await updateDriverStatus(rideId, 'busy');
+        await updateDriverStatus(driverDetails.id, 'busy');
         Swal.fire('Confirmed!', 'Ride has been confirmed.', 'success');
         fetchRides(); // Refresh the list after updating
       } catch (error) {
@@ -85,7 +90,7 @@ function RidesTable() {
     if (result.isConfirmed) {
       try {
         await axios.put(`http://localhost:3000/api/v1/driver/rides/${rideId}`, { status: 'rejected' });
-        await updateDriverStatus(rideId, 'available'); // Set driver status to available after rejection
+        await updateDriverStatus(driverDetails.id, 'available'); // Set driver status to available after rejection
         Swal.fire('Rejected!', 'Ride has been rejected.', 'success');
         fetchRides(); // Refresh the list after updating
       } catch (error) {
@@ -109,7 +114,7 @@ function RidesTable() {
   if (result.isConfirmed) {
     try {
       await axios.put(`http://localhost:3000/api/v1/driver/rides/${rideId}`, { status: 'completed' });
-      await updateDriverStatus(rideId, 'available'); // Set driver status to available after completion
+      await updateDriverStatus(driverDetails.id, 'available'); // Set driver status to available after completion
       Swal.fire('Completed!', 'Ride has been completed.', 'success');
       fetchRides(); // Refresh the list after updating
     } catch (error) {
