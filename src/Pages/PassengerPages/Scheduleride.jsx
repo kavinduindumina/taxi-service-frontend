@@ -331,7 +331,7 @@ export default function Scheduleride() {
             <Card.Body>{confirmationMessage}</Card.Body>
           </Card>
 
-          {rideStatus === "completed" && (
+          {rideStatus === "pending" && (
             <Button
               variant="primary"
               className="w-100 mb-2"
