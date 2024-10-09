@@ -89,19 +89,19 @@ export default function AddPassenger() {
                 />
               </Form.Group>
 
-              <Form.Group controlId="startLocation" className="mb-3">
-                <Form.Label>Start Location</Form.Label>
+              <Form.Group controlId="address" className="mb-3">
+                <Form.Label>Address</Form.Label>
                 <Form.Control
                   type="text"
-                  name="startLocation"
-                  placeholder="Pickup Location"
-                  value={passengerData.startLocation}
+                  name="address"
+                  placeholder="Address"
+                  value={passengerData.address}
                   onChange={handleChange}
                   required
                 />
               </Form.Group>
 
-              <Form.Group controlId="endLocation" className="mb-3">
+              {/* <Form.Group controlId="endLocation" className="mb-3">
                 <Form.Label>End Location</Form.Label>
                 <Form.Control
                   type="text"
@@ -111,7 +111,7 @@ export default function AddPassenger() {
                   onChange={handleChange}
                   required
                 />
-              </Form.Group>
+              </Form.Group> */}
 
               <Button variant="success" type="submit" className="w-100 mb-3">
                 Add Passenger

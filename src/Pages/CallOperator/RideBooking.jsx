@@ -38,6 +38,8 @@ function RideBooking() {
   const [selectedVehicle, setSelectedVehicle] = useState('economy');
   const [selectedDriver, setSelectedDriver] = useState(''); // Track selected driver
   const [drivers, setDrivers] = useState([]); // List of drivers
+  const [selectedPassenger, setSelectedPassenger] = useState(''); // Track selected passenger
+  const [passengers, setPassengers] = useState([]); // List of passengers
 
   // Prices per kilometer for different vehicle types
   const vehiclePrices = {
@@ -49,15 +51,20 @@ function RideBooking() {
   const originRef = useRef();
   const destinationRef = useRef();
 
-  // Fetch drivers from a backend (optionally with a fallback to static drivers)
+  // Fetch drivers and passengers from a backend (optionally with a fallback to static data)
   useEffect(() => {
-    async function fetchDrivers() {
+    async function fetchDriversAndPassengers() {
       try {
-        const response = await axios.get('http://localhost:3000/api/drivers');
-        setDrivers(response.data);
+        const [driverResponse, passengerResponse] = await Promise.all([
+          axios.get('http://localhost:3000/api/drivers'),
+          axios.get('http://localhost:3000/api/passengers'),
+        ]);
+
+        setDrivers(driverResponse.data);
+        setPassengers(passengerResponse.data);
       } catch (error) {
-        console.error('Error fetching drivers from database:', error);
-        // Fallback to static list of drivers
+        console.error('Error fetching data from database:', error);
+        // Fallback to static list of drivers and passengers
         setDrivers([
           { id: 1, name: 'Sumane', phone: '123-456-7890', rating: 4.8 },
           { id: 2, name: 'Sirisena', phone: '987-654-3210', rating: 4.5 },
@@ -65,16 +72,23 @@ function RideBooking() {
           { id: 4, name: 'Gota', phone: '666-789-4321', rating: 4.6 },
           { id: 5, name: 'Sajiiii', phone: '444-555-6666', rating: 4.7 },
         ]);
+        setPassengers([
+          { id: 1, name: 'Ratama Anurata' },
+          { id: 2, name: 'Maka Bass' },
+          { id: 3, name: 'Chinthy Bosa' },
+          { id: 4, name: 'Moda Inu' },
+          { id: 5, name: 'Mama Ranil' },
+        ]);
       }
     }
 
-    fetchDrivers();
+    fetchDriversAndPassengers();
   }, []);
 
   // Define the handleBack function
-function handleBack() {
-  navigate('/CallOperatorDashboard'); // Adjust this route as necessary
-}
+  function handleBack() {
+    navigate('/CallOperatorDashboard'); // Adjust this route as necessary
+  }
 
   // Check if Google Maps is loaded
   if (!isLoaded) {
@@ -87,7 +101,7 @@ function handleBack() {
       alert('Please enter both origin and destination');
       return;
     }
-  
+
     try {
       const directionsService = new window.google.maps.DirectionsService();
       const results = await directionsService.route({
@@ -96,11 +110,11 @@ function handleBack() {
         travelMode: window.google.maps.TravelMode.DRIVING,
       });
       setDirectionsResponse(results);
-  
+
       const distanceInKm = parseFloat(results.routes[0].legs[0].distance.text.replace(' km', ''));
       setDistance(results.routes[0].legs[0].distance.text);
       setDuration(results.routes[0].legs[0].duration.text);
-  
+
       const calculatedPriceInUsd = distanceInKm * vehiclePrices[selectedVehicle];
       const usdToLkrRate = 330; // Example conversion rate from USD to LKR
       const calculatedPriceInLkr = calculatedPriceInUsd * usdToLkrRate;
@@ -118,18 +132,19 @@ function handleBack() {
     setDuration('');
     setPrice(0);
     setSelectedDriver('');
+    setSelectedPassenger('');
     originRef.current.value = '';
     destinationRef.current.value = '';
   }
 
   // Confirm the booking
   function confirmBooking() {
-    if (!selectedDriver) {
-      alert('Please select a driver before confirming the booking');
+    if (!selectedDriver || !selectedPassenger) {
+      alert('Please select both a driver and a passenger before confirming the booking');
       return;
     }
 
-    alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver}. Total price: LKR ${price}`);
+    alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver} and passenger ${selectedPassenger}. Total price: LKR ${price}`);
   }
 
   return (
@@ -173,13 +188,12 @@ function handleBack() {
                 overlay={<Tooltip id="tooltip-top">Clear Route</Tooltip>}
               >
                 <Button variant="danger" onClick={clearRoute}>
-                
                   <FaTimes />
                 </Button>
               </OverlayTrigger>
               <Button variant="info" onClick={handleBack}>
-                  Back
-                </Button>
+                Back
+              </Button>
             </ButtonGroup>
           </Col>
         </Row>
@@ -208,9 +222,26 @@ function handleBack() {
           </Col>
         </Row>
 
-        {/* Driver Selection */}
+        {/* Passenger Selection */}
         {directionsResponse && (
           <>
+            <Row className="mb-3">
+              <Col>
+                <Form.Select
+                  onChange={(e) => setSelectedPassenger(e.target.value)}
+                  value={selectedPassenger}
+                >
+                  <option value="">Select Passenger</option>
+                  {passengers.map(passenger => (
+                    <option key={passenger.id} value={passenger.name}>
+                      {passenger.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Col>
+            </Row>
+
+            {/* Driver Selection */}
             <Row className="mb-3">
               <Col>
                 <Form.Select
