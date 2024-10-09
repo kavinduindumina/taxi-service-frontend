@@ -7,8 +7,11 @@ import {
   Col,
   OverlayTrigger,
   Tooltip,
+  Modal,
+  Card,
+  ListGroup
 } from 'react-bootstrap';
-import { FaLocationArrow, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import {
   useJsApiLoader,
   GoogleMap,
@@ -40,12 +43,15 @@ function RideBooking() {
   const [drivers, setDrivers] = useState([]); // List of drivers
   const [selectedPassenger, setSelectedPassenger] = useState(''); // Track selected passenger
   const [passengers, setPassengers] = useState([]); // List of passengers
+  const [showCarModal, setShowCarModal] = useState(false); // Modal visibility for cars
+  const [availableCars, setAvailableCars] = useState([]); // List of available cars
+  const [selectedCar, setSelectedCar] = useState(''); // Selected car
 
-  // Prices per kilometer for different vehicle types
-  const vehiclePrices = {
-    economy: 1.5,  // $1.5 per km
-    premium: 2.5,  // $2.5 per km
-    suv: 3.5,      // $3.5 per km
+  // Prices per kilometer and per minute for different vehicle types
+  const vehicleRates = {
+    economy: { costPerKilometer: 70, costPerMinute: 50 }, // Example rates for Bike
+    premium: { costPerKilometer: 100, costPerMinute: 80 }, // Example rates for Tuk Tuk
+    suv: { costPerKilometer: 200, costPerMinute: 120 }, // Example rates for Car
   };
 
   const originRef = useRef();
@@ -85,6 +91,30 @@ function RideBooking() {
     fetchDriversAndPassengers();
   }, []);
 
+  // Fetch available cars when car is selected
+  useEffect(() => {
+    if (selectedVehicle === 'suv') {
+      // Simulate fetching available cars (replace with API call if needed)
+      setAvailableCars([
+        { id: 1, name: 'Bugatti Chiron', number: 'CAR-1234' },
+        { id: 2, name: 'Porsche 911', number: 'CAR-5678' },
+        { id: 3, name: 'Lamborghini Huracan', number: 'CAR-9876' },
+      ]);
+      setShowCarModal(true); // Show the car selection modal
+    }
+  }, [selectedVehicle]);
+
+  // Close car modal
+  const closeCarModal = () => {
+    setShowCarModal(false);
+  };
+
+  // Handle car selection
+  const handleCarSelect = (car) => {
+    setSelectedCar(car);
+    setShowCarModal(false); // Close modal after selecting the car
+  };
+
   // Define the handleBack function
   function handleBack() {
     navigate('/CallOperatorDashboard'); // Adjust this route as necessary
@@ -93,6 +123,16 @@ function RideBooking() {
   // Check if Google Maps is loaded
   if (!isLoaded) {
     return <div>Loading...</div>;
+  }
+
+  // Calculate cost based on distance, duration, and vehicle type
+  function calculateCost(distance, duration, vehicleType) {
+    const rates = vehicleRates[vehicleType] || {};
+    const distanceValue = parseFloat(distance.replace(/ km/, '').replace(',', '.'));
+    const durationValue = parseFloat(duration.replace(/ mins/, '').replace(',', '.'));
+
+    const totalCost = rates.costPerKilometer * distanceValue + rates.costPerMinute * durationValue;
+    return isNaN(totalCost) ? 0 : totalCost.toFixed(2);
   }
 
   // Calculate route and price
@@ -111,14 +151,14 @@ function RideBooking() {
       });
       setDirectionsResponse(results);
 
-      const distanceInKm = parseFloat(results.routes[0].legs[0].distance.text.replace(' km', ''));
-      setDistance(results.routes[0].legs[0].distance.text);
-      setDuration(results.routes[0].legs[0].duration.text);
+      const distanceText = results.routes[0].legs[0].distance.text;
+      const durationText = results.routes[0].legs[0].duration.text;
 
-      const calculatedPriceInUsd = distanceInKm * vehiclePrices[selectedVehicle];
-      const usdToLkrRate = 330; // Example conversion rate from USD to LKR
-      const calculatedPriceInLkr = calculatedPriceInUsd * usdToLkrRate;
-      setPrice(calculatedPriceInLkr.toFixed(2));
+      setDistance(distanceText);
+      setDuration(durationText);
+
+      const calculatedPrice = calculateCost(distanceText, durationText, selectedVehicle);
+      setPrice(calculatedPrice);
     } catch (error) {
       console.error('Error calculating route:', error);
       alert('Error calculating route. Please try again.');
@@ -133,18 +173,19 @@ function RideBooking() {
     setPrice(0);
     setSelectedDriver('');
     setSelectedPassenger('');
+    setSelectedCar(''); // Reset selected car
     originRef.current.value = '';
     destinationRef.current.value = '';
   }
 
   // Confirm the booking
   function confirmBooking() {
-    if (!selectedDriver || !selectedPassenger) {
-      alert('Please select both a driver and a passenger before confirming the booking');
+    if (!selectedDriver || !selectedPassenger || (selectedVehicle === 'suv' && !selectedCar)) {
+      alert('Please select all options before confirming the booking');
       return;
     }
 
-    alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver} and passenger ${selectedPassenger}. Total price: LKR ${price}`);
+    alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver}, passenger ${selectedPassenger}, and vehicle ${selectedCar ? selectedCar.name : selectedVehicle}. Total price: LKR ${price}`);
   }
 
   return (
@@ -206,9 +247,9 @@ function RideBooking() {
               value={selectedVehicle}
             >
               <option value="">Select vehicle</option>
-              <option value="economy">Economy</option>
-              <option value="premium">Premium</option>
-              <option value="suv">SUV</option>
+              <option value="economy">Bike</option>
+              <option value="premium">Tuk Tuk</option>
+              <option value="suv">Car</option>
             </Form.Select>
           </Col>
           <Col>
@@ -245,6 +286,7 @@ function RideBooking() {
             <Row className="mb-3">
               <Col>
                 <Form.Select
+                  disabled={!selectedPassenger} // Disable the driver dropdown until a passenger is selected
                   onChange={(e) => setSelectedDriver(e.target.value)}
                   value={selectedDriver}
                 >
@@ -270,6 +312,33 @@ function RideBooking() {
           </>
         )}
       </div>
+
+      {/* Car Selection Modal */}
+      <Modal show={showCarModal} onHide={closeCarModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select a Car</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            {availableCars.map((car) => (
+              <Col md={4} key={car.id}>
+                <Card
+                  onClick={() => handleCarSelect(car)}
+                  className={`mb-3 ${selectedCar === car ? 'border-primary' : ''}`}
+                  style={{ cursor: 'pointer' }}
+                  onMouseEnter={(e) => e.currentTarget.classList.add('shadow-lg')}
+                  onMouseLeave={(e) => e.currentTarget.classList.remove('shadow-lg')}
+                >
+                  <Card.Body>
+                    <Card.Title>{car.name}</Card.Title>
+                    <Card.Text>{car.number}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

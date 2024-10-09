@@ -1,4 +1,4 @@
-Ensure the body and html take up the full height
+/* Ensure the body and html take up the full height */
 html, body {
   height: 100%;
   margin: 0;
@@ -6,16 +6,32 @@ html, body {
   flex-direction: column;
 }
 
-/* The main container for the content, excluding the footer */
 .login-container {
-  flex-grow: 1; /* This will push the footer to the bottom if content is less */
+  flex-grow: 1;
   padding: 2rem;
+  justify-content: center;
+  align-items: center;
   background-color: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 24px;
 }
 
-/* Styling for the footer to ensure it sticks to the bottom */
-/* footer {
+.custom-input {
+  border-radius: 5px;
+}
+
+form {
+  margin-bottom: 0;
+  border: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    padding: 20px; 
+  }
+}
+
+footer {
   background-color: #f8c542;
   width: 100%;
   padding: 1rem 0;
@@ -24,40 +40,19 @@ html, body {
   bottom: 0;
 }
 
-footer p {
-  margin: 0;
-  color: #fff;
-}
+
 
 footer a {
-  color: #fff;
+  color: grey;
+  font-weight: bold; 
   margin: 0 10px;
 }
 
 footer a:hover {
-  color: #ddd;
-} */
-
-/* Ensure the content above the footer takes up full page space */
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures body is at least the height of the viewport */
-  margin: 0;
+  color: black; 
 }
 
 .container-fluid {
-  flex-grow: 1; /* This pushes the footer to the bottom */
-  margin-bottom: 0; /* Ensure no extra spacing at the bottom */
-}
-
-/* Remove the border from the form */
-form {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Remove margin between form and footer */
-form {
+  flex-grow: 1;
   margin-bottom: 0;
 }

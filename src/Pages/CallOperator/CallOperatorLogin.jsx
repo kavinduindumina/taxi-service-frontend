@@ -141,19 +141,14 @@ export default function CallOperatorLogin() {
                   </Button>
                 </div>
 
-                <div className="text-center mt-4">
+                {/* <div className="text-center mt-4">
                   <Link to="/CallOperatorDashboard">
                     <Button variant="primary" size="lg">
                       Call Operator Dashboard
                     </Button>
                   </Link>
-                </div>
+                </div> */}
 
-                <div className="text-center mt-3">
-                  <p className="small fw-bold">
-                    Don’t have an account? <a href="./CallOperatorRegister" className="link-primary">Register here</a>
-                  </p>
-                </div>
               </Form>
             </div>
           </Col>
