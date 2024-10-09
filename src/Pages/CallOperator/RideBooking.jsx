@@ -26,7 +26,7 @@ function RideBooking() {
   const navigate = useNavigate();
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY, // Use environment variable for security
+    googleMapsApiKey: process.env.AIzaSyApHYUH5MfQaCitqMVVbp58DkPYExV6Iw8, 
     libraries: ['places'],
   });
 
