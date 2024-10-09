@@ -32,7 +32,7 @@ export default function Logout() {
       }).then((result) => {
         if (result.isConfirmed) {
           // Clear the token from localStorage
-          localStorage.removeItem('driverToken');
+          localStorage.clear();
   
           // Redirect to the login page
           navigate('/DriverLogin');

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, ListGroup, ProgressBar, Image } from 'react-bootstrap';
 import { FaCar } from 'react-icons/fa';
 import NavBar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import Footer from '../../components/home/Footer';
 import Logout from '../../components/Logout';
 import EditProfileModal from '../../components/Driver/EditProfileModal';
 import MapComponent from '../../components/Driver/MapComponent';
@@ -11,17 +11,24 @@ import RidesTable from '../../components/Driver/RidesTable';
 import RegisterVehicle from '../../components/Driver/RegisterVehicle ';
 import UpdateVehicle from '../../components/Driver/UpdateVehicle'
 import ChatComponent from '../../components/Driver/ChatComponent';
+import MonthlyEarningModal from '../../components/Driver/MonthlyEarningModal';
+import RideModal from '../../components/Driver/RideModal';
 import axios from 'axios';
 
 
 
 export default function DriverDashboard() {
   const [driver, setDriver] = useState({ fullName: '', email: '', username: '', nic: '', phone: '', address: '' });
-  const [vehicles, setVehicles] = useState({ ImagePath:'', vehicleNumber: '', vehicleModel: '' });
+  const [vehicles, setVehicles] = useState({ ImagePath: '', vehicleNumber: '', vehicleModel: '' });
   const [showModal, setShowModal] = useState(false);  // Modal visibility state
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false); // Control modal visibility
   const [selectedVehicleNumber, setSelectedVehicleNumber] = useState(''); // For storing selected vehicle number
+  const [showEarningModal, setEarningShowModal] = useState(false);
+  const [rideDetails, setRideDetails] = useState({});
+  const [showRideListModal, setRideListModal] = useState(false);
+  const [loading, setLoading] = useState(false); // To handle loading state
+  const [error, setError] = useState(null);
 
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
@@ -31,6 +38,7 @@ export default function DriverDashboard() {
   const [editAddress, setEditAddress] = useState('');
   const [totalRideCount, setTotalRideCount] = useState('');
   const [totalEarnings, setTotalEarnings] = useState(0); // Add state for total earnings
+  const [driverId, setDriverId] = useState('');
   const navigate = useNavigate();
 
   //--------------fetch driver------------------//
@@ -38,6 +46,7 @@ export default function DriverDashboard() {
     const token = localStorage.getItem('driverToken');
     const userDetails = localStorage.getItem('UserDetails');
     const userDetailsParse = JSON.parse(userDetails)
+    setDriverId(userDetailsParse.id)
 
     if (!token) {
       navigate('/DriverLogin'); // Redirect to login if no token is present
@@ -88,7 +97,8 @@ export default function DriverDashboard() {
         driverId: userDetailsParse.id
       })
         .then(res => {
-          setVehicles(res.data.vehicles); // Set vehicles in state
+          setVehicles(res.data.data); // Set vehicles in state
+          console.log(res.data.data); // Set vehicle
         })
         .catch(err => {
           console.log('Error fetching vehicle details:', err);
@@ -104,6 +114,7 @@ export default function DriverDashboard() {
 
   // Handle modal close
   const handleClose = () => setShowModal(false);
+
 
   // Handle modal open for vehicle registration
   const handleShowVehicleModal = () => setShowVehicleModal(true);
@@ -135,6 +146,40 @@ export default function DriverDashboard() {
     setShowModal(false);
   };
 
+  // Open the modal and fetch ride details from the API
+  const handleViewDetails = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get('http://localhost:3000/api/v1/driver/ride-details');
+      const data = response.data;
+      console.log(data);
+
+      // Assuming the API returns an array of rides, you can set the first ride as an example
+      setRideDetails(data[0]); // Or map through the rides depending on your needs
+
+      setEarningShowModal(true);
+    } catch (err) {
+      console.error('Error fetching ride details:', err);
+      setError('Error fetching ride details.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const EarningHandleClose = () => setEarningShowModal(false);
+
+  //-----------ride lsit model-----------
+  const handleViewRideDetails = () => {
+    setRideListModal(true);
+  };
+
+  const handleCloseRideDetails = () => {
+    setRideListModal(false);
+  };
+
+
   return (
     <div>
       {/*Navigation Bar */}
@@ -163,8 +208,6 @@ export default function DriverDashboard() {
             </h2>
           </Col>
 
-
-
           {/*Logout Button */}
           <Col md={4} className="d-flex justify-content-center">
             <Logout />
@@ -175,27 +218,38 @@ export default function DriverDashboard() {
 
 
         {/* Summary Cards */}
+        {/*------------------- Monthly Earnings Card ------------------------- */}
         <Row className="mb-4">
           <Col md={4}>
             <Card className="text-center"
-            style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
-            }}>
+              style={{
+                background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)',
+              }}>
               <Card.Body>
                 <Card.Title>Monthly Earnings</Card.Title>
                 <Card.Text>
                   <h3>Rs. {totalEarnings.toFixed(2)}</h3>
                 </Card.Text>
-                <Button variant="primary">View Details</Button>
+                <Button variant="primary" onClick={handleViewDetails} disabled={loading}>
+                  {loading ? 'Loading...' : 'View Details'}
+                </Button>
               </Card.Body>
             </Card>
           </Col>
 
+          <MonthlyEarningModal
+            show={showEarningModal}
+            handleClose={EarningHandleClose}
+            rideDetails={rideDetails}
+          />
+
+
+          {/*------------------- Total Ride Card------------------------- */}
           <Col md={4}>
             <Card className="text-center"
-            style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
-            }}>
+              style={{
+                background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)',
+              }}>
               <Card.Body>
                 <Card.Title>Total Rides</Card.Title>
                 <Card.Text>
@@ -203,26 +257,31 @@ export default function DriverDashboard() {
                     totalRideCount > 0 ? totalRideCount : "Loading"
                   }</h3>
                 </Card.Text>
-                <Button variant="success">View History</Button>
+                <Button variant="success" onClick={handleViewRideDetails}>View History</Button>
               </Card.Body>
             </Card>
           </Col>
+          {/* Ride Modal */}
+          <RideModal show={showRideListModal} handleClose={handleCloseRideDetails} />
+
+          {/*------------------- Ratings Card ------------------------- */}
 
           <Col md={4}>
             <Card className="text-center"
-            style={{
-              background: 'linear-gradient(125deg, #ecf0f1, #FFA500,  #ecf0f1)', 
-            }}>
+              style={{
+                background: 'linear-gradient(125deg, #ffeaa7, #ffeaa7,  #ffeaa7)',
+              }}>
               <Card.Body>
                 <Card.Title>Rating</Card.Title>
                 <Card.Text>
-                  <h3>4.8 <span style={{ color: 'gold' }}>★</span></h3>
+                  <h3>5.0 <span style={{ color: 'gold' }}>★</span></h3>
                 </Card.Text>
                 <Button variant="info">View Reviews</Button>
               </Card.Body>
             </Card>
           </Col>
         </Row>
+
 
         {/* Dashboard sections */}
 
@@ -258,36 +317,36 @@ export default function DriverDashboard() {
             <br />
 
             <Card className="mb-4">
-  <Card.Header>Vehicle Details</Card.Header>
-  <Card.Body className="text-center">
-    {vehicles.length > 0 ? (
-      vehicles.map((vehicle) => (
-        <div key={vehicle.vehicleNumber} className="mb-3">
-          <UpdateVehicle
-            show={showUpdateModal} // Pass the modal visibility state
-            handleClose={handleCloseUpdateModal} // Pass the function to close the modal
-            vehicleNumber={selectedVehicleNumber} // Pass the selected vehicle number
-          />
-          {/* Display Vehicle Image */}
-          <Image
-            src={vehicle.ImagePath}
-            roundedCircle
-            fluid
-            style={{ width: '120px', height: '120px' }}
-            alt="Vehicle Details"
-          />
-          <p className="mt-3"><strong>Vehicle Number: </strong>{vehicle.vehicleNumber}</p>
-          <p><strong>Vehicle Type: </strong>{vehicle.vehicleModel}</p>
-          <Button variant="success" onClick={() => handleShowUpdateModal(vehicle.vehicleNumber)}>
-            <strong>Update</strong>
-          </Button>
-        </div>
-      ))
-    ) : (
-      <p>Loading vehicles...</p>
-    )}
-  </Card.Body>
-</Card>
+              <Card.Header>Vehicle Details</Card.Header>
+              <Card.Body className="text-center">
+                {vehicles.length > 0 ? (
+                  vehicles.map((vehicle) => (
+                    <div key={vehicle.vehicleNumber} className="mb-3">
+                      <UpdateVehicle
+                        show={showUpdateModal} // Pass the modal visibility state
+                        handleClose={handleCloseUpdateModal} // Pass the function to close the modal
+                        vehicleNumber={selectedVehicleNumber} // Pass the selected vehicle number
+                      />
+                      {/* Display Vehicle Image */}
+                      <Image
+                        src={vehicle.ImagePath}
+                        roundedCircle
+                        fluid
+                        style={{ width: '120px', height: '120px' }}
+                        alt="Vehicle Details"
+                      />
+                      <p className="mt-3"><strong>Vehicle Number: </strong>{vehicle.vehicleNumber}</p>
+                      <p><strong>Vehicle Type: </strong>{vehicle.vehicleModel}</p>
+                      <Button variant="success" onClick={() => handleShowUpdateModal(vehicle.vehicleNumber)}>
+                        <strong>Update</strong>
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <p>Loading vehicles...</p>
+                )}
+              </Card.Body>
+            </Card>
 
 
             {/* Use the EditProfileModal component */}
@@ -307,6 +366,7 @@ export default function DriverDashboard() {
               editAddress={editAddress}
               setEditAddress={setEditAddress}
               handleSaveChanges={handleSaveChanges}
+              driverId={driverId}
             />
 
 
@@ -329,7 +389,7 @@ export default function DriverDashboard() {
 
         </Row>
       </Container>
-      {/*<ChatComponent />*/}
+      {/**/}<ChatComponent />
       <Footer />
 
     </div>
