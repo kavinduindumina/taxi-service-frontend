@@ -20,7 +20,7 @@ import {
   DirectionsRenderer,
 } from '@react-google-maps/api';
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const center = { lat: 48.8584, lng: 2.2945 };
