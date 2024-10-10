@@ -22,6 +22,7 @@ import {
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const center = { lat: 48.8584, lng: 2.2945 };
 
@@ -72,18 +73,16 @@ function RideBooking() {
         console.error('Error fetching data from database:', error);
         // Fallback to static list of drivers and passengers
         setDrivers([
-          { id: 1, name: 'Sumane', phone: '123-456-7890', rating: 4.8 },
-          { id: 2, name: 'Sirisena', phone: '987-654-3210', rating: 4.5 },
-          { id: 3, name: 'Mainda Mahathiya', phone: '555-123-4567', rating: 4.9 },
-          { id: 4, name: 'Gota', phone: '666-789-4321', rating: 4.6 },
-          { id: 5, name: 'Sajiiii', phone: '444-555-6666', rating: 4.7 },
+          { id: 1, name: 'Kavindu', phone: '0757225442', rating: 5.0 },
+          { id: 2, name: 'Indumina', phone: '0771330645', rating: 5.0 },
         ]);
         setPassengers([
-          { id: 1, name: 'Ratama Anurata' },
-          { id: 2, name: 'Maka Bass' },
-          { id: 3, name: 'Chinthy Bosa' },
-          { id: 4, name: 'Moda Inu' },
-          { id: 5, name: 'Mama Ranil' },
+          { id: 1, name: 'Nethmi' },
+          { id: 2, name: 'KGK Indumina' },
+          { id: 3, name: 'Prabhath' },
+          { id: 4, name: 'Inushki' },
+          { id: 5, name: 'Nirasha' },
+
         ]);
       }
     }
@@ -96,9 +95,9 @@ function RideBooking() {
     if (selectedVehicle === 'suv') {
       // Simulate fetching available cars (replace with API call if needed)
       setAvailableCars([
-        { id: 1, name: 'Bugatti Chiron', number: 'CAR-1234' },
-        { id: 2, name: 'Porsche 911', number: 'CAR-5678' },
-        { id: 3, name: 'Lamborghini Huracan', number: 'CAR-9876' },
+        { id: 1, name: 'Alto', number: 'CAS-1234' },
+        { id: 2, name: 'Eon', number: 'CAR-5678' },
+        { id: 3, name: 'Aqua', number: 'CAR-9876' },
       ]);
       setShowCarModal(true); // Show the car selection modal
     }
@@ -182,10 +181,19 @@ function RideBooking() {
   function confirmBooking() {
     if (!selectedDriver || !selectedPassenger || (selectedVehicle === 'suv' && !selectedCar)) {
       alert('Please select all options before confirming the booking');
+      
       return;
     }
+    Swal.fire({
+      icon: 'success',
+      title: 'Ride Booked!',
+      text: 'Your ride has been successfully booked.',
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
 
-    alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver}, passenger ${selectedPassenger}, and vehicle ${selectedCar ? selectedCar.name : selectedVehicle}. Total price: LKR ${price}`);
+    //alert(`Booking confirmed! Ride from ${originRef.current.value} to ${destinationRef.current.value} with driver ${selectedDriver}, passenger ${selectedPassenger}, and vehicle ${selectedCar ? selectedCar.name : selectedVehicle}. Total price: LKR ${price}`);
   }
 
   return (

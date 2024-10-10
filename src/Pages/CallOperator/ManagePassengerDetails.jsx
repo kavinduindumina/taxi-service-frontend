@@ -9,8 +9,8 @@ const ManagePassengerDetails = () => {
   useEffect(() => {
     const fetchPassengers = async () => {
       const data = [
-        { id: 1, email: 'oshadan@icloud.com', fullName: 'Oshada Wickramasinghe', userName: 'oshada_n', nic: '2001278436782', phone: '123-456-7890', address: '24, Richmond Hill, Galle' },
-        { id: 2, email: 'mithilad@outlook.com', fullName: 'Mithila Damruwan', userName: 'mithila_d', nic: '29908283789239', phone: '897-237-675', address: '17, Elliot Rd, Galle' },
+        { id: 1, email: 'nethmi@gmail.com', fullName: 'Nethmi', userName: 'nethmi_n', nic: '200050301058', phone: '076-4016954', address: '24, Richmond Hill, Galle' },
+        { id: 2, email: 'indumina@gmail.com', fullName: 'kgk indumina', userName: 'indumina_d', nic: '20028283789239', phone: '077-1330645', address: '17, Elliot Rd, Galle' },
       ];
       setPassengers(data);
     };
