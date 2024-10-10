@@ -105,16 +105,7 @@ export default function Scheduleride() {
   };
 
   const handleDoneClick = () => {
-    if (rideStatus === "completed") {
       setShowRatingModal(true);
-    } else {
-      Swal.fire({
-        title: "Ride not completed",
-        text: "You can only rate the ride after it has been completed.",
-        icon: "info",
-        confirmButtonText: "OK",
-      });
-    }
   };
 
   const handleCloseRatingModal = () => {
