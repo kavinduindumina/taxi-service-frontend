@@ -53,7 +53,7 @@ export default function Scheduleride() {
         `Your booking for ${bookingDetails.dropLocation} is pending. Your driver will be assigned 15 to 30 minutes before the specified time, and trip details will be shared then. The trip fare may change depending on availability.`
       );
     }
-    axios.get("http://localhost:3000/api/v1/passenger/ride-details/21").then((response) => {
+    axios.get("http://localhost:3000/api/v1/passenger/ride-details/1").then((response) => {
       setBookingDetails(response.data.data[0]);
       console.log("Ride details fetched:", response.data.data[0]); 
     })
