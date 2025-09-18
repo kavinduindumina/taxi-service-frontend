@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDss-ip1FdZQsbsNh6f5wuPLpO6KbKizZc",
+  apiKey: "sjhdsgksfhsdfsdklf",
   authDomain: "taxiservice-3547e.firebaseapp.com",
   projectId: "taxiservice-3547e",
   storageBucket: "taxiservice-3547e.appspot.com",
